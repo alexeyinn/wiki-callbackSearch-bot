@@ -3,6 +3,11 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 require('dotenv').config();
 const { Router, Markup } = Telegraf;
+const session = require('telegraf/session');
+const Stage = require('telegraf/stage');
+const Scene = require('telegraf/scenes/base');
+
+const { enter, leave } = Stage;
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -23,9 +28,6 @@ Work on English version in progress`,
   )
 );
 
-telegram.action('russianScene', (ctx) => /* здесь должен быть вход для сцены */ )
-telegram.action('englishScene', (ctx) => /* здесь должен быть вход для сцены */ )
-
 bot.help((ctx) =>
   ctx.reply(
     `Контактная информация для вопросов и предложений - @alexeyinn 
@@ -40,7 +42,12 @@ bot.help((ctx) =>
   )
 );
 
-bot.on('text', async (ctx) => {
+const ruLang = new Scene('russianLang');
+ruLang.enter((ctx) =>
+  ctx.reply('Вы выбрали русский язык. Введите ваш запрос, что бы найти необходимую статью из вики')
+);
+ruLang.leave((ctx) => ctx.reply('Вы сменили язык...'));
+ruLang.on('text', async (ctx) => {
   const wiki = ctx.message.text;
   const link = `https://ru.wikipedia.org/wiki/${encodeURIComponent(wiki)}`;
   const anotherLink = `https://ru.wikipedia.org/wiki/${encodeURIComponent(
@@ -70,5 +77,53 @@ bot.on('text', async (ctx) => {
       ctx.reply('Проверьте написание запроса. Возможно, вы допустили грамматическую ошибку.');
     });
 });
+
+const enLang = new Scene('englishLang');
+enLang.enter((ctx) =>
+  ctx.reply('You choice an english wiki. Type you quore for get information from enciclopedia')
+);
+enLang.leave((ctx) => ctx.reply('You changed language version wiki...'));
+enLang.command('russian', leave());
+enLang.on('text', async (ctx) => {
+  const enWiki = ctx.message.text;
+  const enLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(enWiki)}`;
+  const enAnotherLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(
+    enWiki
+  )}_(disambiguation)`;
+
+  ctx.reply(`For othew uses - ${enAnotherLink}`);
+  ctx.reply(`Get a full information - ${enLink}`);
+
+  await axios
+    .get(enLink)
+    .then((response) => {
+      const $ = cheerio.load(response.data, { decodeEntities: false });
+
+      ctx.reply(
+        $('.mw-parser-output')
+          .children('p')
+          .slice(0)
+          .eq(0)
+          .text()
+          .replace(/(\[\S+\])+/g, '')
+      );
+    })
+
+    .catch((error) => {
+      ctx.reply(`Error ${error.name}:${error.message}\n${error.stack}`);
+      ctx.reply('Check your quore. Maybe problem just in grammer');
+    });
+});
+
+const stage = new Stage([ruLang, enLang]);
+bot.use(session());
+bot.use(stage.middleware());
+bot.action('russianScene', (ctx) => ctx.scene.enter('russianLang'));
+bot.action('englishScene', (ctx) => ctx.scene.enter('englishLang'));
+//ruLang.command('russian', (ctx) => ctx.scene.enter('russianLang'));
+bot.command('modern', ({ reply }) => reply('Yo'));
+//telegram.action('englishScene', (ctx) => /* здесь должен быть вход для сцены */ )
+//bot.command('echo', (ctx) => ctx.scene.enter('echo'))
+//bot.on('message', (ctx) => ctx.reply('Try /echo or /greeter'))
 
 bot.launch();
