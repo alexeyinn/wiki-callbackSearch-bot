@@ -2,26 +2,42 @@ const Telegraf = require('telegraf');
 const axios = require('axios');
 const cheerio = require('cheerio');
 require('dotenv').config();
+const { Router, Markup } = Telegraf;
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+const inlineKeyboardChoiceLang = Markup.inlineKeyboard([
+  Markup.callbackButton('Русская Wiki', 'russianScene'),
+  Markup.callbackButton('English Wiki', 'englishScene'),
+]).extra();
+
 bot.start((ctx) =>
-  ctx.reply(`Здравствуйте ${ctx.message.from.first_name}!
+  ctx.reply(
+    `Здравствуйте ${ctx.message.from.first_name}!
 Введите Ваш вопрос, чтобы получить краткую выдержку из "Википедии", ссылку на полную статью, а так же на другие возможные значения вашего запроса.
 Либо введите команду /help , для получения информации об этом боте, контактной информации и др.
 
 Good day ${ctx.message.from.first_name}!
-Work on English version in progress`)
+Work on English version in progress`,
+    inlineKeyboardChoiceLang
+  )
 );
 
+telegram.action('russianScene', (ctx) => /* здесь должен быть вход для сцены */ )
+telegram.action('englishScene', (ctx) => /* здесь должен быть вход для сцены */ )
+
 bot.help((ctx) =>
-  ctx.reply(`Контактная информация для вопросов и предложений - @alexeyinn 
+  ctx.reply(
+    `Контактная информация для вопросов и предложений - @alexeyinn 
 Ссылка на исходный код проекта - https://github.com/alexeyinn/wiki_CallbackSearch_bot
 В планах добавить в бота: 
 Переключение между языками в рамках одного бота. 
 Навигация по разделам искомой статьи прямо внутри бота. 
 Сбор статистики по посещаемости.
 Получение "статей дня", "текущих событий" и тп.
-`)
+`,
+    inlineKeyboardChoiceLang
+  )
 );
 
 bot.on('text', async (ctx) => {
