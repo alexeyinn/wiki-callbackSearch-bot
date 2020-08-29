@@ -2,10 +2,13 @@ const Telegraf = require('telegraf');
 const axios = require('axios');
 const cheerio = require('cheerio');
 require('dotenv').config();
-const { Router, Markup } = Telegraf;
-const session = require('telegraf/session');
-const Stage = require('telegraf/stage');
+const { Extra, Markup, Stage, session } = Telegraf;
 const Scene = require('telegraf/scenes/base');
+
+const SceneGenerator = require('./Scenes/ruScene');
+
+const curScene = new SceneGenerator();
+const ruScene = curScene.GenRuLangScene();
 
 const { enter, leave } = Stage;
 
@@ -42,7 +45,7 @@ bot.help((ctx) =>
   )
 );
 
-const ruLang = new Scene('russianLang');
+/* const ruLang = new Scene('russianLang');
 ruLang.enter((ctx) =>
   ctx.reply('Вы выбрали русский язык. Введите ваш запрос, что бы найти необходимую статью из вики')
 );
@@ -76,7 +79,7 @@ ruLang.on('text', async (ctx) => {
       ctx.reply(`Ошибка ${error.name}:${error.message}\n${error.stack}`);
       ctx.reply('Проверьте написание запроса. Возможно, вы допустили грамматическую ошибку.');
     });
-});
+}); */
 
 const enLang = new Scene('englishLang');
 enLang.enter((ctx) =>
@@ -91,7 +94,7 @@ enLang.on('text', async (ctx) => {
     enWiki
   )}_(disambiguation)`;
 
-  ctx.reply(`For othew uses - ${enAnotherLink}`);
+  ctx.reply(`For other uses - ${enAnotherLink}`);
   ctx.reply(`Get a full information - ${enLink}`);
 
   await axios
@@ -115,15 +118,15 @@ enLang.on('text', async (ctx) => {
     });
 });
 
-const stage = new Stage([ruLang, enLang]);
+const stage = new Stage([ruScene, enLang]);
 bot.use(session());
 bot.use(stage.middleware());
 bot.action('russianScene', (ctx) => ctx.scene.enter('russianLang'));
 bot.action('englishScene', (ctx) => ctx.scene.enter('englishLang'));
-//ruLang.command('russian', (ctx) => ctx.scene.enter('russianLang'));
+// ruLang.command('russian', (ctx) => ctx.scene.enter('russianLang'));
 bot.command('modern', ({ reply }) => reply('Yo'));
-//telegram.action('englishScene', (ctx) => /* здесь должен быть вход для сцены */ )
-//bot.command('echo', (ctx) => ctx.scene.enter('echo'))
-//bot.on('message', (ctx) => ctx.reply('Try /echo or /greeter'))
+// telegram.action('englishScene', (ctx) => /* здесь должен быть вход для сцены */ )
+// bot.command('echo', (ctx) => ctx.scene.enter('echo'))
+// bot.on('message', (ctx) => ctx.reply('Try /echo or /greeter'))
 
 bot.launch();
