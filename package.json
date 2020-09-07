@@ -1,7 +1,7 @@
 {
   "name": "wiki_callbacksearch_bot",
-  "version": "1.0.0",
-  "description": "Бот для получения информации из Википедии",
+  "version": "2.0.0",
+  "description": "Wikipedia parse bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
