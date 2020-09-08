@@ -51,10 +51,12 @@ bot.start((ctx) =>
   ctx.reply(
     `Здравствуйте ${ctx.message.from.first_name}!
 Введите Ваш запрос, чтобы получить краткую выдержку из "Википедии", ссылку на полную статью, а так же на другие возможные значения вашего запроса.
+(Имена и фамилии людей нужно вводить с большой буквы. Большими буквами весь запрос - писать нельзя)
 Либо введите команду /help , для получения информации об этом боте, контактной информации и др.
 
 Good day ${ctx.message.from.first_name}!
-Send your quastion for getting short discription from Wiki, link on full article and link on other uses your search word
+Send your quastion for getting short discription from Wiki, link on full article and link on other uses your search-word.
+(Person's first name and last name, first char, must by writen in Upperсase)
 Or just send command /help , for get bot's info, contacts and other`,
     inlineKeyboardChoiceLang
   )
@@ -198,7 +200,7 @@ enLang.on('text', async (ctx) => {
     .catch((error) => {
       ctx.reply(`Error ${error.name}:${error.message}\n${error.stack}`);
       ctx.reply(
-        "Check your query. Maybe problem just in grammar, or type /switch to change Wiki's language"
+        "Check your query. Maybe problem just in grammar.\nPerson's first name and last name, first char, must by writen in Upperсase\n Or type /switch to change Wiki's language"
       );
     });
 });
@@ -211,7 +213,7 @@ const genRuLink =
 
 ruLang.enter((ctx) =>
   ctx.reply(
-    'Вы выбрали русский язык. Введите ваш запрос, что бы найти необходимую статью из вики, лиюл используейте кнопки снизу, для запросов спецаильного назначения.',
+    'Вы выбрали русский язык. Введите ваш запрос, что бы найти необходимую статью из вики, либо используейте кнопки снизу, для запросов спецаильного назначения.',
     KeyboardSpecial
   )
 );
@@ -326,7 +328,7 @@ ruLang.on('text', async (ctx) => {
     .catch((error) => {
       ctx.reply(`Ошибка ${error.name}:${error.message}\n${error.stack}`);
       ctx.reply(
-        'Проверьте написание запроса. Возможно, вы допустили грамматическую ошибку. Либо введите /switch для изменения версии локализации Wiki'
+        'Проверьте написание запроса. Возможно, вы допустили грамматическую ошибку.\n(Имена и фамилии людей нужно вводить с большой буквы. Большими буквами весь запрос - писать нельзя)\nЛибо введите /switch для изменения версии локализации Wiki.'
       );
     });
 });
