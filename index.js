@@ -185,7 +185,7 @@ enLang.on('text', async (ctx) => {
 
       ctx.reply(
         $('.mw-parser-output')
-          .children('p')
+          .children("p:contains('.')")
           .slice(0)
           .eq(0)
           .text()
