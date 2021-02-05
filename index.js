@@ -345,3 +345,7 @@ bot.action('russianScene', (ctx) => ctx.scene.enter('russianLang'));
 bot.action('englishScene', (ctx) => ctx.scene.enter('englishLang'));
 
 bot.launch();
+// For catching unexpected errors
+process.on('uncaughtException', (err) => {
+  console.error(err);
+});
