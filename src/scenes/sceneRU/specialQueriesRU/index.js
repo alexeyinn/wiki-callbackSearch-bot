@@ -11,5 +11,5 @@ module.exports = {
   didYouKnowRU,
   onThisDayRU,
   dayPictureRU,
-  goodArticleRU
+  goodArticleRU,
 };
