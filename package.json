@@ -15,7 +15,7 @@
     "js",
     "parse"
   ],
-  "author": "tg @alexeyinn",
+  "author": "https://t.me/alexeyinn",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^7.2.0",

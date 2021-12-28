@@ -11,7 +11,7 @@ const onThisDayEN = async (ctx) => {
     .get(genLinkEN)
     .then((response) => {
       const $ = cheerio.load(response.data, { decodeEntities: false });
-      ctx.reply(`${today.ENdayMonth}\n` + $('#mp-otd').children('ul').text(), keyboardSpecialEN);
+      ctx.reply(`${today.ENdayMonth}\n${$('#mp-otd').children('ul').text()}`, keyboardSpecialEN);
     })
     .catch((error) => {
       ctx.reply(`Error ${error.name}:${error.message}\n${error.stack}`);

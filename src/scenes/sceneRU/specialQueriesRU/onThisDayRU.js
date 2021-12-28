@@ -12,7 +12,7 @@ const onThisDayRU = async (ctx) => {
     .get(genLinkRU)
     .then((response) => {
       const $ = cheerio.load(response.data, { decodeEntities: false });
-      ctx.reply(`${today.dayMonth}\n` + $('#main-itd').children('ul').text(), keyboardSpecialRU);
+      ctx.reply(`${today.dayMonth}\n${$('#main-itd').children('ul').text()}`, keyboardSpecialRU);
     })
     .catch((error) => {
       ctx.reply(`Ошибка ${error.name}:${error.message}\n${error.stack}`);
